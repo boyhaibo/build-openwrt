@@ -192,6 +192,10 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7
 # 更改 Argon 主题背景
 cp -f $GITHUB_WORKSPACE/images/bg1.jpg feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 
+# 修改版本为编译日期
+sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION=''/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_DESCRIPTION=.*/DISTRIB_DESCRIPTION='%D R$(date +%y.%-m.%-d)'/g" package/base-files/files/etc/openwrt_release
+
 # 取消主题默认设置
 # find $destination_dir/luci-theme-*/ -type f -name '*luci-theme-*' -print -exec sed -i '/set luci.main.mediaurlbase/d' {} \;
 

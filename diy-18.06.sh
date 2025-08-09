@@ -198,6 +198,11 @@ cp -f $GITHUB_WORKSPACE/images/bg1.jpg feeds/luci/themes/luci-theme-argon/htdocs
 sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/files/x86/autocore
 sed -i "s/'C'/'Core '/g; s/'T '/'Thread '/g" package/lean/autocore/files/x86/autocore
 
+# 修改版本为编译日期
+sed -i '/DISTRIB_REVISION/d; /DISTRIB_DESCRIPTION/d' package/lean/default-settings/files/zzz-default-settings
+sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION=''/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_DESCRIPTION=.*/DISTRIB_DESCRIPTION='LEDE R$(date +%y.%-m.%-d)'/g" package/base-files/files/etc/openwrt_release
+
 # 取消主题默认设置
 # find $destination_dir/luci-theme-*/ -type f -name '*luci-theme-*' -print -exec sed -i '/set luci.main.mediaurlbase/d' {} \;
 
