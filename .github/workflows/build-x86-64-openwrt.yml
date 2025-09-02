@@ -138,7 +138,7 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         if [[ $SOURCE_REPO == 'lede' ]]; then
-          sed -i '/luci/s/^#//; /luci.git/s/^/#/' feeds.conf.default
+          sed -i '/luci/s/^#//; /luci.git;openwrt/s/^/#/' feeds.conf.default
         fi
         ./scripts/feeds update -a
         ./scripts/feeds install -a
