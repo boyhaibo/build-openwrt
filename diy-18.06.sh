@@ -2,10 +2,12 @@
 
 color() {
     case $1 in
-        cr) echo -e "\e[1;31m$2\e[0m" ;;
-        cg) echo -e "\e[1;32m$2\e[0m" ;;
-        cy) echo -e "\e[1;33m$2\e[0m" ;;
-        cb) echo -e "\e[1;34m$2\e[0m" ;;
+        cr) echo -e "\e[1;31m$2\e[0m" ;;  # 红色
+        cg) echo -e "\e[1;32m$2\e[0m" ;;  # 绿色
+        cy) echo -e "\e[1;33m$2\e[0m" ;;  # 黄色
+        cb) echo -e "\e[1;34m$2\e[0m" ;;  # 蓝色
+        cp) echo -e "\e[1;35m$2\e[0m" ;;  # 紫色
+        cc) echo -e "\e[1;36m$2\e[0m" ;;  # 青色
     esac
 }
 
@@ -171,7 +173,7 @@ sed -i "s|firmware_repo.*|firmware_repo 'https://github.com/$GITHUB_REPOSITORY'|
 # sed -i "s|kernel_path.*|kernel_path 'https://github.com/ophub/kernel'|g" $destination_dir/luci-app-amlogic/root/etc/config/amlogic
 sed -i "s|ARMv8|$RELEASE_TAG|g" $destination_dir/luci-app-amlogic/root/etc/config/amlogic
 
-# 开始加载个人设置
+# 加载个人设置
 begin_time=$(date '+%H:%M:%S')
 
 # 修改默认IP
@@ -211,9 +213,6 @@ sed -i 's|admin\\|admin\\/services\\|g' feeds/luci/applications/luci-app-dockerm
 # sed -i 's/vpn/services/g; s/VPN/Services/g' feeds/luci/applications/luci-app-zerotier/luasrc/controller/zerotier.lua
 # sed -i 's/vpn/services/g' feeds/luci/applications/luci-app-zerotier/luasrc/view/zerotier/zerotier_status.htm
 
-# 添加防火墙规则
-# sed -i '/PREROUTING/s/^#//' package/lean/default-settings/files/zzz-default-settings
-
 # 取消对 samba4 的菜单调整
 # sed -i '/samba4/s/^/#/' package/lean/default-settings/files/zzz-default-settings
 
@@ -232,12 +231,12 @@ for e in $(ls -d $destination_dir/luci-*/po feeds/luci/applications/luci-*/po); 
 done
 status "加载个人设置"
 
-# 开始更新配置文件
+# 更新配置文件
 begin_time=$(date '+%H:%M:%S')
 make defconfig 1>/dev/null 2>&1
 status "更新配置文件"
 
-# 开始下载openclash运行内核
+# 下载openclash运行内核
 [ $CLASH_KERNEL ] && grep -q "luci-app-openclash=y" .config && {
     begin_time=$(date '+%H:%M:%S')
     chmod +x $GITHUB_WORKSPACE/scripts/preset-clash-core.sh
@@ -245,7 +244,7 @@ status "更新配置文件"
     status "下载openclash运行内核"
 }
 
-# 开始下载adguardhome运行内核
+# 下载adguardhome运行内核
 [ $CLASH_KERNEL ] && grep -q "luci-app-adguardhome=y" .config && {
     begin_time=$(date '+%H:%M:%S')
     chmod +x $GITHUB_WORKSPACE/scripts/preset-adguard-core.sh
@@ -253,7 +252,7 @@ status "更新配置文件"
     status "下载adguardhome运行内核"
 }
 
-# 开始下载zsh终端工具
+# 下载zsh终端工具
 grep -q "zsh=y" .config &&  {
     begin_time=$(date '+%H:%M:%S')
     chmod +x $GITHUB_WORKSPACE/scripts/preset-terminal-tools.sh
