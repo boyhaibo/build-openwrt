@@ -23,8 +23,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [armv8]
-        branch: [18.06, 23.05]
+        target: ['armv8']
+        branch: ['18.06', '24.10']
 
     env:
       CONFIG_FILE: configs/${{ matrix.target }}-${{ matrix.branch }}.config
@@ -40,9 +40,9 @@ jobs:
         if [[ ${{ matrix.branch }} == '18.06' ]]; then
           echo "REPO_URL=https://github.com/coolsnowwolf/lede" >>$GITHUB_ENV
           echo "REPO_BRANCH=master" >>$GITHUB_ENV
-        elif [[ ${{ matrix.branch }} == '23.05' ]]; then
+        elif [[ ${{ matrix.branch }} == '24.10' ]]; then
           echo "REPO_URL=https://github.com/immortalwrt/immortalwrt" >>$GITHUB_ENV
-          echo "REPO_BRANCH=openwrt-23.05" >>$GITHUB_ENV
+          echo "REPO_BRANCH=openwrt-24.10" >>$GITHUB_ENV
         fi
 
     - name: Check Server Performance
