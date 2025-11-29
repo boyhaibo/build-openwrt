@@ -57,7 +57,7 @@ on:
 
 jobs:
   packaging:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id
     name: packaging ${{ matrix.target }} ${{ matrix.branch }}
     strategy:
@@ -89,12 +89,12 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        docker rmi $(docker images -q)
-        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
-        (sudo -E apt-get -y update
-        sudo -E apt-get -y install rename $(curl -fsSL is.gd/depends_ubuntu_2204)
+        docker rmi -f $(docker images -q) 2>/dev/null || true
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android $AGENT_TOOLSDIRECTORY
+        sudo -E apt-get -y update
+        sudo -E apt-get -y install rename $(curl -fsSL is.gd/depends_ubuntu_2404)
         sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get -y clean) &
+        sudo -E apt-get -y clean
         sudo timedatectl set-timezone "$TZ"
 
     - name: Clone Source Code
