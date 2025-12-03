@@ -3,7 +3,7 @@ name: build armv8 openwrt
 on:
   workflow_dispatch:
   schedule:
-    - cron: 30 14 */3 * *
+    - cron: 0 0 */3 * *
   watch:
     types: started
 
