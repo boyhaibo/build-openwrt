@@ -195,16 +195,23 @@ sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION=''/g" package/base-files/files/et
 sed -i "s/DISTRIB_DESCRIPTION=.*/DISTRIB_DESCRIPTION='%D R$(date +%y.%-m.%-d)'/g" package/base-files/files/etc/openwrt_release
 
 # 删除主题默认设置
-# find $destination_dir/luci-theme-*/ -type f -name '*luci-theme-*' -print -exec sed -i '/set luci.main.mediaurlbase/d' {} \;
+# find $destination_dir/luci-theme-*/ -type f -name '*luci-theme-*' -exec sed -i '/set luci.main.mediaurlbase/d' {} +
 
 # 设置 nlbwmon 独立菜单
 sed -i 's/services\/nlbw/nlbw/g; /path/s/admin\///g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
 sed -i 's/services\///g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
 
 # 修复 Makefile 路径
-find $destination_dir/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i \
-    -e 's?\.\./\.\./luci.mk?$(TOPDIR)/feeds/luci/luci.mk?' \
-    -e 's?include \.\./\.\./\(lang\|devel\)?include $(TOPDIR)/feeds/packages/\1?' {}
+find $destination_dir -type f -name "Makefile" | xargs sed -i \
+    -e 's?\.\./\.\./\(lang\|devel\)?$(TOPDIR)/feeds/packages/\1?' \
+    -e 's?\.\./\.\./luci.mk?$(TOPDIR)/feeds/luci/luci.mk?'
+
+# 移除 attendedsysupgrade
+find "feeds/luci/collections" -name "Makefile" | while read -r makefile; do
+    if grep -q "luci-app-attendedsysupgrade" "$makefile"; then
+        sed -i "/luci-app-attendedsysupgrade/d" "$makefile"
+    fi
+done
 
 # 转换插件语言翻译
 for e in $(ls -d $destination_dir/luci-*/po feeds/luci/applications/luci-*/po); do
