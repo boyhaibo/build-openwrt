@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 打包toolchain目录
-if [[ "$REBUILD_TOOLCHAIN" = 'true' ]]; then
+if [[ "$UPDATE_TOOLCHAIN" = 'true' ]]; then
     cd $OPENWRT_PATH
     sed -i 's/ $(tool.*\/stamp-compile)//' Makefile
     if [[ -d ".ccache" && $(du -s .ccache | cut -f1) -gt 0 ]]; then
@@ -271,7 +271,7 @@ download_toolchain() {
     local cache_xa cache_xc
     if [[ "$TOOLCHAIN" = 'true' ]]; then
         cache_xa=$(curl -sL "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" | awk -F '"' '/download_url/{print $4}' | grep "$CACHE_NAME")
-        cache_xc=$(curl -sL "https://api.github.com/repos/haiibo/toolchain-cache/releases" | awk -F '"' '/download_url/{print $4}' | grep "$CACHE_NAME")
+        # cache_xc=$(curl -sL "https://api.github.com/repos/haiibo/toolchain-cache/releases" | awk -F '"' '/download_url/{print $4}' | grep "$CACHE_NAME")
         if [[ "$cache_xa" || "$cache_xc" ]]; then
             wget -qc -t=3 "${cache_xa:-$cache_xc}"
             if [ -e *.tzst ]; then
@@ -280,12 +280,12 @@ download_toolchain() {
                 [ -d staging_dir ] && sed -i 's/ $(tool.*\/stamp-compile)//' Makefile
             fi
         else
-            echo "REBUILD_TOOLCHAIN=true" >>$GITHUB_ENV
+            echo "UPDATE_TOOLCHAIN=true" >>$GITHUB_ENV
             echo "⚠️ 未找到最新工具链"
             return 99
         fi
     else
-        echo "REBUILD_TOOLCHAIN=true" >>$GITHUB_ENV
+        echo "UPDATE_TOOLCHAIN=true" >>$GITHUB_ENV
         return 99
     fi
 }
