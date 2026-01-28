@@ -188,7 +188,7 @@ main() {
     status_info "设置环境变量" set_variable_values
 
     # 下载部署toolchain缓存
-    status_info "下载部署toolchain缓存" download_toolchain
+    # status_info "下载部署toolchain缓存" download_toolchain
 
     # 更新&安装插件
     status_info "更新&安装插件" update_install_feeds
@@ -271,7 +271,7 @@ download_toolchain() {
     local cache_xa cache_xc
     if [[ "$TOOLCHAIN" = 'true' ]]; then
         cache_xa=$(curl -sL "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" | awk -F '"' '/download_url/{print $4}' | grep "$CACHE_NAME")
-        # cache_xc=$(curl -sL "https://api.github.com/repos/haiibo/toolchain-cache/releases" | awk -F '"' '/download_url/{print $4}' | grep "$CACHE_NAME")
+        cache_xc=$(curl -sL "https://api.github.com/repos/haiibo/toolchain-cache/releases" | awk -F '"' '/download_url/{print $4}' | grep "$CACHE_NAME")
         if [[ "$cache_xa" || "$cache_xc" ]]; then
             wget -qc -t=3 "${cache_xa:-$cache_xc}"
             if [ -e *.tzst ]; then
