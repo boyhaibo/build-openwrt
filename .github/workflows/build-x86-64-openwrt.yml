@@ -157,15 +157,11 @@ jobs:
           GH_TOKEN: ${{github.token}}
         run: |
           if [ -d $OPENWRT_PATH/staging_dir/toolchain* ]; then
-            find "$OPENWRT_PATH/staging_dir" -type d -name "stamp" ! -path "*target*" | while read -r DIR_PATH; do
-              find $DIR_PATH -type f -exec touch {} +
-            done
+            find "$OPENWRT_PATH/staging_dir" -type f -path "*/stamp/*" ! -path "*target*" -exec touch {} +
             echo "toolchain skiped done!"
           fi
           if ${{steps.cache.outputs.cache-hit != 'true'}}; then
-            gh cache list --key "$SOURCE_REPO-$LITE_BRANCH-$DEVICE_TARGET" | cut -f1 | while read -r CACHE_KEY; do
-              gh cache delete $CACHE_KEY
-            done
+            gh cache list --key "$SOURCE_REPO-$LITE_BRANCH-$DEVICE_TARGET" | cut -f1 | xargs -rn1 gh cache delete
             echo "caches cleanup done!"
           fi
 
