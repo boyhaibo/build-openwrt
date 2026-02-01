@@ -51,10 +51,10 @@ status_info() {
         time_info=""
     fi
     if [[ "$exit_code" -eq 0 ]]; then
-        printf "%s %-53s %s %s %s %s %s %s %s\n" \
+        printf "%s %-52s %s %s %s %s %s %s %s\n" \
         $(color cy "⏳ $task_name") [ $(color cg ✔) ] $(color cw "$time_info")
     else
-        printf "%s %-53s %s %s %s %s %s %s %s\n" \
+        printf "%s %-52s %s %s %s %s %s %s %s\n" \
         $(color cy "⏳ $task_name") [ $(color cr ✖) ] $(color cw "$time_info")
     fi
 }
