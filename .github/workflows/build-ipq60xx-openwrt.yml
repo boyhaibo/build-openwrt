@@ -143,39 +143,37 @@ jobs:
           sed -i 's/REPO_BRANCH=".*"/REPO_BRANCH="main"/' $DIY_SCRIPT
           chmod +x $DIY_SCRIPT && ./$DIY_SCRIPT
 
-      - name: Compile Toolchain
-        if: env.REBUILD_TOOLCHAIN == 'true'
-        id: toolchain
+      - name: Check Caches
+        id: cache
+        if: env.TOOLCHAIN == 'true'
+        uses: actions/cache@main
+        with:
+          key: ${{env.CACHE_NAME}}
+          restore-keys: ${{env.SOURCE_REPO}}-${{env.LITE_BRANCH}}-${{env.DEVICE_TARGET}}
+          path: |
+            ${{env.OPENWRT_PATH}}/.ccache
+            ${{env.OPENWRT_PATH}}/staging_dir/host*
+            ${{env.OPENWRT_PATH}}/staging_dir/tool*
+
+      - name: Delete Old Caches
+        if: env.TOOLCHAIN == 'true'
+        env:
+          GH_TOKEN: ${{github.token}}
         run: |
-          cd $OPENWRT_PATH
-          make toolchain/compile -j$(nproc) || make toolchain/compile -j1 V=s
-          $GITHUB_WORKSPACE/$DIY_SCRIPT
-
-      - name: Delete Old Toolchain
-        if: steps.toolchain.conclusion == 'success' || env.OUTPUT_RELEASE == 'true'
-        uses: mknejp/delete-release-assets@v1
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
-          tag: toolchain-cache
-          assets: '${{env.SOURCE_REPO}}-${{env.LITE_BRANCH}}-${{env.DEVICE_TARGET}}*'
-          fail-if-no-assets: false
-          fail-if-no-release: false
-
-      - name: Upload Toolchain To Release
-        if: steps.toolchain.conclusion == 'success' || env.OUTPUT_RELEASE == 'true'
-        uses: softprops/action-gh-release@master
-        with:
-          name: toolchain-cache
-          tag_name: toolchain-cache
-          token: ${{secrets.GITHUB_TOKEN}}
-          files: output/*
-          body: OpenWrt 工具链缓存
+          if [ -d $OPENWRT_PATH/staging_dir/toolchain* ]; then
+            find "$OPENWRT_PATH/staging_dir" -type f -path "*/stamp/*" ! -path "*target*" -exec touch {} +
+            echo "toolchain skiped done!"
+          fi
+          if ${{steps.cache.outputs.cache-hit != 'true'}}; then
+            gh cache list --key "$SOURCE_REPO-$LITE_BRANCH-$DEVICE_TARGET" | cut -f1 | xargs -rn1 gh cache delete
+            echo "caches cleanup done!"
+          fi
 
       - name: Download DL Packages
         run: |
           cd $OPENWRT_PATH
-          # make download -j$(nproc)
-          make package/download -j$(nproc)
+          make download -j$(nproc)
+          # make package/download -j$(nproc)
 
       - name: Compile Firmware
         id: compile
