@@ -188,7 +188,7 @@ main() {
     status_info "设置环境变量" set_variable_values
 
     # 下载部署toolchain缓存
-    status_info "下载部署toolchain缓存" download_toolchain
+    # status_info "下载部署toolchain缓存" download_toolchain
 
     # 更新&安装插件
     status_info "更新&安装插件" update_install_feeds
@@ -316,7 +316,7 @@ add_custom_packages() {
     clone_all https://github.com/brvphoenix/wrtbwmon
 
     # 科学上网插件
-    clone_all https://github.com/fw876/helloworld
+    # clone_all https://github.com/fw876/helloworld
     clone_all https://github.com/Openwrt-Passwall/openwrt-passwall-packages
     clone_all https://github.com/Openwrt-Passwall/openwrt-passwall
     clone_all https://github.com/Openwrt-Passwall/openwrt-passwall2
