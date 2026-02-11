@@ -236,7 +236,7 @@ clone_source_code() {
 
 # 设置环境变量
 set_variable_values() {
-    local TARGET_NAME SUBTARGET_NAME KERNEL TOOLS_HASH
+    local TARGET_NAME SUBTARGET_NAME KERNEL SOURCE_HASH
 
     # 源仓库与分支
     SOURCE_REPO=$(basename "$REPO_URL")
@@ -255,8 +255,8 @@ set_variable_values() {
     echo "KERNEL_VERSION=$KERNEL_VERSION" >> $GITHUB_ENV
 
     # toolchain缓存文件名
-    TOOLS_HASH=$(git log -1 --pretty=format:"%h" tools toolchain)
-    CACHE_NAME="$SOURCE_REPO-${REPO_BRANCH#*-}-$DEVICE_TARGET-cache-$TOOLS_HASH"
+    SOURCE_HASH=$(git log -1 --pretty=format:"%h")
+    CACHE_NAME="$SOURCE_REPO-${REPO_BRANCH#*-}-$DEVICE_TARGET-cache-$SOURCE_HASH"
     echo "CACHE_NAME=$CACHE_NAME" >> $GITHUB_ENV
 
     # 源码更新信息
